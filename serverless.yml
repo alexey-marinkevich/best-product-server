@@ -1,7 +1,7 @@
 # NOTE: update this with your service name
 service: best-product-server
 
-# Create an optimized package for our functions 
+# Create an optimized package for our functions
 package:
   individually: true
 
@@ -20,13 +20,49 @@ provider:
   # the following line. Also, make sure to not
   # commit your .env.
   #
-  #environment:
-  #  sampleEnvVar: ${env:SAMPLE_ENV_VAR}
+  # environment:
+  # PRODUCTS_TABLE: BP-Products
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: 'arn:aws:dynamodb:ap-northeast-1:*:*'
 
 functions:
-  hello:
-    handler: handler.hello
+  getProductById:
+    handler: functions/get-product-by-id.main
     events:
       - http:
-          path: hello
+          path: product/{id}
           method: get
+          cors: true
+          authorizer: aws_iam
+
+  getAllProducts:
+    handler: functions/get-all-products.main
+    events:
+      - http:
+          path: product
+          method: get
+          cors: true
+          authorizer: aws_iam
+
+  suggestProduct:
+    handler: functions/suggest-product.main
+    events:
+      - http:
+          path: product
+          method: post
+          cors: true
+          authorizer: aws_iam
+# Create our resources with separate CloudFormation templates
+resources:
+  # API Gateway Errors
+  - ${file(resources/api-gateway-errors.yml)}
