@@ -16,9 +16,6 @@ export async function main() {
 
     return failure({ status: false, error: 'Nothign found' });
   } catch (e) {
-    if (process.env.NODE_ENV === 'development') {
-      console.log(e);
-    }
     return failure({ status: false });
   }
 }
