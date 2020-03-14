@@ -11,7 +11,10 @@ export async function main() {
     const result = await ddb.call('scan', params);
 
     if (result.Items) {
-      return success(result.Items);
+      const sortedItems = result.Items.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+      );
+      return success(sortedItems);
     }
 
     return failure({ status: false, error: 'Nothign found' });
