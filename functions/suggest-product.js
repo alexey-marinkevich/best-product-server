@@ -9,7 +9,7 @@ export async function main(event) {
     const data = transform(event.body);
     const input = validateProduct(data);
 
-    const { prodName, headImg, shortDescription, fullDescription, gallery } = input;
+    const { prodName, headImg, shortDescription, fullDescription, gallery, prodUrl } = input;
     const params = {
       TableName: process.env.PRODUCTS_TABLE,
       Item: {
@@ -19,6 +19,7 @@ export async function main(event) {
         shortDescription,
         fullDescription,
         gallery,
+        prodUrl,
         createdAt: new Date().toISOString(),
       },
     };
